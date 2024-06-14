@@ -35,7 +35,8 @@
                 x:Name="collectionView"
                 HorizontalOptions="Center"
                 SelectionMode="Single"
-                VerticalOptions="Center">
+                VerticalOptions="Center"
+                SelectionChanged="collectionView_SelectionChanged">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -53,13 +54,15 @@
                                         <SwipeItem
                                             Text="ELIMINAR"
                                             BackgroundColor="#fd3333"
-                                            Command="{Binding BindingContext.UpdateCommand, Source={x:Reference collectionView}}"
-                                            CommandParameter="{Binding .}" />
+                                            Command="{Binding BindingContext.DeleteCommand, Source={x:Reference collectionView}}"
+                                            CommandParameter="{Binding .}" 
+                                            Clicked="EliminarAutor_Clicked"/>
                                         <SwipeItem
                                             Text="ACTUALIZAR" 
                                             BackgroundColor="#60bd37"
-                                            Command="{Binding BindingContext.DeleteCommand, Source={x:Reference collectionView}}"
-                                            CommandParameter="{Binding .}" />
+                                            Command="{Binding BindingContext.UpdateCommand, Source={x:Reference collectionView}}"
+                                            CommandParameter="{Binding .}" 
+                                            Clicked="ActualizarAutor_Clicked"/>
                                     </SwipeItems>
                                 </SwipeView.RightItems>
 

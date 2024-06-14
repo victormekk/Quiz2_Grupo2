@@ -1,13 +1,25 @@
+using Quiz2_Grupo2.Controllers;
+using Quiz2_Grupo2.Models;
+using System.Collections.ObjectModel;
 namespace Quiz2_Grupo2.Views;
 
 public partial class verAutores : ContentPage
 {
     private Controllers.AutorController AutorController;
     private List<Models.Autor> autores;
+    Models.Autor selectedAuthor;
+    private AutorController controller;
+    public ObservableCollection<Autor> Autores { get; set; }
+    public Command<Autor> UpdateCommand { get; }
+    public Command<Autor> DeleteCommand { get; }
+
     public verAutores()
     {
         InitializeComponent();
         AutorController = new Controllers.AutorController();
+        controller = new AutorController();
+        Autores = new ObservableCollection<Autor>();
+        BindingContext = this;
     }
 
     //Metodo que permite mostrar la lista mientras la pagina se esta mostrando o cargando
@@ -55,5 +67,46 @@ public partial class verAutores : ContentPage
     private void btnRegresar_Clicked(object sender, EventArgs e)
     {
         Navigation.PopAsync();
+    }
+
+    private void collectionView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        selectedAuthor = e.CurrentSelection.FirstOrDefault() as Models.Autor;
+    }
+
+    private async void ActualizarAutor_Clicked(object sender, EventArgs e)
+    {
+        if (selectedAuthor != null)
+        {
+            await Navigation.PushAsync(new actuAutor(selectedAuthor.Id));
+        }
+        else
+        {
+            await DisplayAlert("Error", "Seleccione un autor primero", "OK");
+        }
+    }
+
+    private async void EliminarAutor_Clicked(object sender, EventArgs e)
+    {
+        var result = await DisplayAlert("Confirmar", "¿Está seguro que desea eliminar este autor?", "Sí", "No");
+
+        if (selectedAuthor != null)
+        {
+            if (result)
+            {
+                await controller.deleteAutor(selectedAuthor.Id);
+                Autores.Remove(selectedAuthor);
+
+                Navigation.PopAsync();
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            await DisplayAlert("Error", "Seleccione un autor primero", "OK");
+        }
     }
 }
